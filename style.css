@@ -1,0 +1,84 @@
+body,html {
+    padding:1px;
+    /*overflow:hidden;*/
+    width: 100%;
+    /*height: 100%;*/
+    margin: 2px;
+    border: 2px;
+    color: #000000;
+    background-color: #eeeeee !important;
+ }
+.hdr-layout
+{
+    display: table;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-color: #000000;
+    margin: 0 auto;
+    background-color: #5B9BD5 !important;
+    width: 65%;
+    /*height: 100px;*/
+}
+.hdr-layout-row
+{
+    display: table-row;
+    text-align:center;
+    width: 100%;
+    border: 1px;
+}
+.hdr-layout-cell
+{
+    display: table-cell;
+    text-align:center;
+    vertical-align: middle;
+    color: #FFFFFF;
+    border-color: #EAEBE8;
+    margin: 5px 5px 5px 5px;
+    font-family: 'San-Serif','Arial','Century Gothic' !important;
+    font-weight: bold;
+    /*font-size: 60px;*/
+}
+.layout
+{
+    display: table;
+    table-layout: fixed;
+    /*border-collapse: collapse;*/
+    border-color: #000000;
+    margin: 3px auto;
+    width: 100%;
+    /*background-color: #FFFFFF !important;*/
+    /*height: 100px;*/
+}
+.layout-row
+{
+    display: table-row;
+    text-align:center;
+    width: 100%;
+    border: 1px;
+    margin: 1px 1px 1px 1px;
+}
+.layout-cell
+{
+    display: table-cell;
+    padding:1px;
+    vertical-align: middle;
+    color: #222222;
+    border: 1px;
+    margin: 5px 5px 5px 5px;
+    font-family: 'San-Serif','Arial','Century Gothic' !important;
+    /*font-weight: bold;*/
+    text-align: left;
+    background-color: #DEEAF6 !important;
+    /*font-size: 60px;*/
+}
+.spacer{
+    background-color: #FFFFFF !important;
+    height: 1px;
+    width: 100%;
+}
+.footer{
+    border-color: #000000;
+    margin: 0 auto;
+    background-color: #DEEAF6 !important;
+    width: 100%;
+}
