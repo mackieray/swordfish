@@ -1,10 +1,10 @@
 <?php
 /*
  * Project  : swordfish
- * Filename : phpbuilder.php
+ * Filename : phpjson.php
  * Create by: Ray
- * Date     : 2015-05-26
- * Time     : 12:45
+ * Date     : 2015-05-28
+ * Time     : 11:19
  */
 
 if(isset($_REQUEST['key'])) {
@@ -15,99 +15,97 @@ if(isset($_REQUEST['key'])) {
 }else{
     die("Unauthorised Access!");
 }
-echo "<link rel='stylesheet' href='style.css' rel='stylesheet' type='text/css'>";
-require_once(__DIR__ . '/githubphp/client/GitHubClient.php');
 
 $owner = 'TimoSolo';
 $repo = 'spiraleye_openerp_addons_6.1';
 
-$client = new GitHubClient();
-//$client->setCredentials($username, $password);
-$client->setOauthKey($OAuth);
-$client->setPage();
-$client->setPageSize(20);
-$issues = $client->issues->listIssues($owner, $repo);
-//Issue Count: " . count($issues) ."
-$html = "<div class='layout'>
-    <div class='hdr-layout'>
-    <div class='hdr-layout-row'>
-    <div class='hdr-layout-cell'>#</div>
-    <div class='hdr-layout-cell'>Client<br>Name</div>
-    <div class='hdr-layout-cell'>Action<br>Item/Request</div>
-    <div class='hdr-layout-cell'>Description</div>
-    <div class='hdr-layout-cell'>GH Number</div>
-    <div class='hdr-layout-cell'>Priority<br>(High, Med, Low)</div>
-    <div class='hdr-layout-cell'>Category<br>(Bug, Enhancement,<br>Reporting, OPS Support)</div>
-    <div class='hdr-layout-cell'>Assigned To</div>
-    <div class='hdr-layout-cell'>Comments</div>
-    <div class='hdr-layout-cell'>Status</div>
+echo "<link rel='stylesheet' href='style.css' rel='stylesheet' type='text/css'>";
+
+//exec("C:\Program Files (x86)\Git\bin\curl --url https://api.github.com/repos/$owner/$repo/issues > response.json");
+//"curl https://api.github.com/repos/TimoSolo/spiraleye_openerp_addons_6.1/issues > response.json";
+//$url1 =  "curl https://api.github.com/repos/$owner/$repo/issues > response.json";
+$url2 =  "https://api.github.com/repos/$owner/$repo/issues";
+
+$html = "<div class='container'>
+
+    <div class='row hdr'>
+    <div class='column'>#</div>
+    <div class='column'>Client<br>Name</div>
+    <div class='column'>Action<br>Item/Request</div>
+    <div class='column'>Description</div>
+    <div class='column'>GH Number</div>
+    <div class='column'>Priority<br>(High, Med, Low)</div>
+    <div class='column'>Category<br>(Bug, Enhancement,<br>Reporting, OPS Support)</div>
+    <div class='column'>Assigned To</div>
+    <div class='column'>Comments</div>
+    <div class='column'>Status</div>
     </div>";
+
+// Read the file contents into a string variable, and parse the string into a data structure
+$output = file_get_contents("response.json");
+$issues = json_decode($output,true);
+if(count($issues)<1){die("Sorry but there are no issues to list.");}
+
 $n = 1;
 foreach ($issues as $issue)
 {
-    $client = '';
-    $priority = '';
-    $category = '';
-    $assign = '';
-    $comment = '';
-    $status = '';
-    $title = $issue->getTitle();
-    $body = $issue->getBody();
-    $num = $issue->getNumber();
-    //$issue->getNumber() != NULL
+    //initailize ariables
+    $client = 'Unknown';
+    $clients = $issue['labels'];
+    $cnt = count($clients);
+    $priority = 'None';
+    $category = 'None';
+    if(is_null($issue['assignee'])){ $assignee = $issue['assignee'];}else{$assignee = '';}
+    $comment = $issue['comments'];
+    $status = $issue['state'];
+    $title = $issue['title'];
+    $body = $issue['body'];
+    $num = $issue['number'];
 
-    if($n==0) {
-        //$labels = $client->issues->labels->listLabelsOnAnIssue($owner, $repo, $issue->getNumber());
-        $labels = $client->issues->labels->listAllLabelsForThisRepository($owner, $repo);
-        echo "<pre>";
-        var_dump($labels);
-        echo "</pre>";
-        die();
+    //eyeline
+    if(($n % 2)!=0){$bgcolor = '#DEEAF6';}else{$bgcolor = '#FFFFFF';}
+
+    for($c=0;$c<$cnt;$c++){
+        $nme = $clients[$c]['name'].'<br>';
+        $prefix = substr($nme,0,2);
+        switch($prefix){
+            case 'C:':
+                $client = $nme;
+                break;
+            case 'P:':
+                $priority = $nme;
+                break;
+            default:
+                $category = $nme;
+                break;
+        }
     }
 
-//    foreach($labels as $label){
-//        if($label->getName() != NULL) {
-//            $prefix = substr($label->getName(), 0, 2);
-//            switch ($prefix) {
-//                case "C:":
-//                    $client = substr($label->getName(), 2);
-//                    break;
-//                case "P:":
-//                    $priority = substr($label->getName(), 2);
-//                    break;
-//                default:
-//                    switch (strtolower($label->getName())) {
-//                        case "reporting":
-//                            $category = 'Reporting';
-//                            break;
-//                        case "bug":
-//                            $category = 'Bug';
-//                            break;
-//                        case "Enhancement":
-//                            $category = 'Enhancement';
-//                            break;
-//                    }
-//                    break;
-//            }
-//        }
-//    }
-
-    $html .= "<div class='layout-row'>".
-        "<div class='layout-cell'>" . $n . ".&nbsp;</div>".
-        "<div class='layout-cell'>" . $client . "</div>".
-        "<div class='layout-cell'>" . $title . "</div>".
-        "<div class='layout-cell'>" . $body . "</div>".
-        "<div class='layout-cell'>" . $issue->getNumber() ."</div>".
-        "<div class='layout-cell'>" . $priority . "</div>".
-        "<div class='layout-cell'>" . $category . "</div>".
-        "<div class='layout-cell'>" . $assign . "</div>".
-        "<div class='layout-cell'>" . $comment . "</div>".
-        "<div class='layout-cell'>" . $status . "</div>".
+    $html .= "<div class='row' style='background-color: $bgcolor;'>".
+        "<div class='column'>" . $n . ".&nbsp;</div>".
+        "<div class='column'>" . $client . "</div>".
+        "<div class='column'>" . $title . "</div>".
+        "<div class='column'>" . $body . "</div>".
+        "<div class='column'>" . $num ."</div>".
+        "<div class='column'>" . $priority . "</div>".
+        "<div class='column'>" . $category . "</div>".
+        "<div class='column'>" . $assignee . "</div>".
+        "<div class='column'>" . $comment . "</div>".
+        "<div class='column'>" . $status . "</div>".
         "</div>
         ";
-    //<div class='spacer'></div>
 
     $n++;
 }
 $html .= "</div>";
 echo $html;
+
+function addIssue()
+{
+//Modify the value, and write the structure to a file "data_out.json"
+$data["boss"]["Hobbies"][0] = "Swimming";
+$fh = fopen("response.json", 'w')
+or die("Error opening output file");
+fwrite($fh, json_encode($data,JSON_UNESCAPED_UNICODE));
+fclose($fh);
+}
